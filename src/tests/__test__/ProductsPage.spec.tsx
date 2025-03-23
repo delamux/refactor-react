@@ -8,7 +8,6 @@ import productsResponse from "./data/productsResponse.json";
 
 const mockWebServer = new MockWebServer();
 
-
 describe("Products Page component", () => {
     beforeAll(() => mockWebServer.start());
     afterEach(() => mockWebServer.resetHandlers());
@@ -20,8 +19,7 @@ describe("Products Page component", () => {
         const titleElement = screen.getByRole("heading", { name: /product price updater/i });
         expect(titleElement).toBeInTheDocument();
     });
-
-})
+});
 
 function givenProducts() {
     mockWebServer.addRequestHandlers([
@@ -33,7 +31,6 @@ function givenProducts() {
         },
     ]);
 }
-
 
 function renderComponent(component: ReactNode): RenderResult {
     return render(<AppProvider>{component}</AppProvider>);
