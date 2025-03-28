@@ -185,6 +185,7 @@ export const ProductsPage: React.FC = () => {
                     {'Product price updater'}
                 </Typography>
                 <DataGrid<Product>
+                    columnBuffer={10} // We set the buffer to no make test fail
                     rowHeight={300}
                     rows={products}
                     columns={columns}
