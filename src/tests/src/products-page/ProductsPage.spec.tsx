@@ -1,9 +1,9 @@
 import { render, RenderResult, screen } from "@testing-library/react";
 import { test, expect, describe, beforeAll, afterAll, afterEach } from "vitest";
-import { ProductsPage } from "../../pages/ProductsPage.tsx";
-import { AppProvider } from "../../context/AppProvider.tsx";
+import { ProductsPage } from "../../../pages/ProductsPage.tsx";
+import { AppProvider } from "../../../context/AppProvider.tsx";
 import { ReactNode } from "react";
-import { MockWebServer } from "../MockWebServer.ts";
+import { MockWebServer } from "../../MockWebServer.ts";
 import productsResponse from "./data/productsResponse.json";
 
 const mockWebServer = new MockWebServer();
