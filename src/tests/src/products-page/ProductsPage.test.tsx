@@ -5,9 +5,17 @@ import { AppProvider } from '../../../context/AppProvider.tsx';
 import { ReactNode } from 'react';
 import { givenEmptyProducts, givenProducts } from './ProductsPage.fixture.ts';
 import { MockWebServer } from '../../MockWebServer.ts';
-import { verifyHeaders, verifyRows, waitForTableIsLoaded } from './ProductsPage.helpers.tsx';
+import {
+  openDialogToEditPrice,
+  verifyDialog,
+  verifyHeaders,
+  verifyRows,
+  waitForTableIsLoaded,
+} from './ProductsPage.helpers.tsx';
 
 export const mockWebServer = new MockWebServer();
+
+
 describe('Products Page component', () => {
   beforeAll(() => mockWebServer.start());
   afterEach(() => mockWebServer.resetHandlers());
@@ -43,7 +51,20 @@ describe('Products Page component', () => {
     verifyHeaders(header);
     verifyRows(rows, products);
   });
+
+  it('Should open the dialog when clicking on the edit button', async () => {
+    const products = givenProducts(mockWebServer);
+    renderComponent(<ProductsPage />);
+    await waitForTableIsLoaded();
+    
+    const productIndex = 0;
+
+    const dialog = await openDialogToEditPrice(productIndex);
+
+    verifyDialog(dialog, products[productIndex])
+  })
 });
+
 
 function renderComponent(component: ReactNode): RenderResult {
   return render(<AppProvider>{component}</AppProvider>);

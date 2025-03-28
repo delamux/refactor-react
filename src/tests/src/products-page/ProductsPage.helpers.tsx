@@ -1,6 +1,7 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import { expect } from 'vitest';
 import { RemoteProduct } from '../../../api/StoreApi.ts';
+import userEvent from '@testing-library/user-event';
 
 export function verifyHeaders(headerRow: HTMLElement) {
   const headerScope = within(headerRow);
@@ -39,4 +40,30 @@ export async function waitForTableIsLoaded() {
     const rowsLength = (await screen.findAllByRole('row')).length;
     expect(rowsLength).toBeGreaterThan(1);
   });
+}
+
+export function verifyDialog(dialog: HTMLElement, product: RemoteProduct) {
+  const dialogScope = within(dialog);
+
+  dialogScope.getByText(product.title);
+  const image: HTMLImageElement = dialogScope.getByRole('img');
+  expect(image.src).toBe(product.image);
+  const price: HTMLInputElement = screen.getByRole('textbox');
+  expect(price.value).toBe(`${product.price.toFixed(2)}`);
+}
+
+export async function openDialogToEditPrice(productIndex: number): Promise<HTMLElement> {
+  const allRows = await screen.getAllByRole('row');
+  const [, ...rows] = allRows;
+
+  const row = rows[productIndex];
+  const rowScope = within(row);
+
+  await userEvent.click(rowScope.getByRole('menuitem'));
+
+  const updatePriceMenuItem = await screen.findByRole('menuitem', { name: /update price/i });
+
+  await userEvent.click(updatePriceMenuItem);
+
+  return screen.getByRole('dialog');
 }
