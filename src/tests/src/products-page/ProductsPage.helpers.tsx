@@ -67,3 +67,16 @@ export async function openDialogToEditPrice(productIndex: number): Promise<HTMLE
 
   return screen.getByRole('dialog');
 }
+
+export async function insertPrice(dialog: HTMLElement, negativePrice: string) {
+  const dialogScope = within(dialog);
+  const priceInput: HTMLInputElement = dialogScope.getByRole('textbox', { name: 'Price' });
+
+  await userEvent.clear(priceInput);
+  await userEvent.type(priceInput, negativePrice);
+}
+
+export function verifyError(dialog: HTMLElement, error: string) {
+  const dialogScope = within(dialog);
+  dialogScope.findByText(error);
+}
