@@ -1,11 +1,11 @@
 /** @format */
 
 module.exports = {
-    printWidth: 100,
+    printWidth: 120,
     tabWidth: 4,
     useTabs: false,
     semi: true,
-    singleQuote: false,
+    singleQuote: true,
     trailingComma: "es5",
     bracketSpacing: true,
     jsxBracketSameLine: false,

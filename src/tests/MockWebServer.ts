@@ -1,7 +1,7 @@
-import { DefaultBodyType, http, HttpResponse } from "msw";
-import { SetupServer, setupServer } from "msw/node";
+import { DefaultBodyType, http, HttpResponse } from 'msw';
+import { SetupServer, setupServer } from 'msw/node';
 
-export type Method = "get" | "post" | "put";
+export type Method = 'get' | 'post' | 'put';
 
 export interface MockHandler<T extends DefaultBodyType> {
     method: Method;
@@ -24,7 +24,7 @@ export class MockWebServer {
     constructor() {
         this.server = setupServer();
 
-        this.server.events.on("request:start", req => {
+        this.server.events.on('request:start', req => {
             const request = this.mapRequest(req.request);
 
             this.lastRequest = request;
@@ -50,7 +50,7 @@ export class MockWebServer {
     }
 
     addVerificationListener(assertion: (req: globalThis.Request) => void) {
-        this.server.events.on("request:start", req => {
+        this.server.events.on('request:start', req => {
             const request = req.request;
 
             assertion(request);
@@ -59,15 +59,15 @@ export class MockWebServer {
 
     createMwsHandler<T extends DefaultBodyType>(handler: MockHandler<T>) {
         switch (handler.method) {
-            case "get":
+            case 'get':
                 return http.get(handler.endpoint, () => {
                     return HttpResponse.json(handler.response, { status: handler.httpStatusCode });
                 });
-            case "post":
+            case 'post':
                 return http.post(handler.endpoint, () => {
                     return HttpResponse.json(handler.response, { status: handler.httpStatusCode });
                 });
-            case "put":
+            case 'put':
                 return http.put(handler.endpoint, () => {
                     return HttpResponse.json(handler.response, { status: handler.httpStatusCode });
                 });

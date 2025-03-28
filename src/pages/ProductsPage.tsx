@@ -1,18 +1,13 @@
-import { Alert, Box, Container, Snackbar, Stack, TextField, Typography } from "@mui/material";
-import {
-    DataGrid,
-    GridActionsCellItem,
-    GridColDef,
-    GridValueFormatterParams,
-} from "@mui/x-data-grid";
-import { Footer } from "../components/Footer";
-import { MainAppBar } from "../components/MainAppBar";
-import styled from "@emotion/styled";
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
-import { useAppContext } from "../context/useAppContext";
-import { ConfirmationDialog } from "../components/ConfirmationDialog";
-import { useReload } from "../hooks/useReload";
-import { RemoteProduct, StoreApi } from "../api/StoreApi";
+import { Alert, Box, Container, Snackbar, Stack, TextField, Typography } from '@mui/material';
+import { DataGrid, GridActionsCellItem, GridColDef, GridValueFormatterParams } from '@mui/x-data-grid';
+import { Footer } from '../components/Footer';
+import { MainAppBar } from '../components/MainAppBar';
+import styled from '@emotion/styled';
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react';
+import { useAppContext } from '../context/useAppContext';
+import { ConfirmationDialog } from '../components/ConfirmationDialog';
+import { useReload } from '../hooks/useReload';
+import { RemoteProduct, StoreApi } from '../api/StoreApi';
 
 const baseColumn: Partial<GridColDef<Product>> = {
     disableColumnMenu: true,
@@ -34,7 +29,7 @@ export const ProductsPage: React.FC = () => {
 
     useEffect(() => {
         storeApi.getAll().then(response => {
-            console.debug("Reloading", reloadKey);
+            console.debug('Reloading', reloadKey);
 
             const remoteProducts = response as RemoteProduct[];
 
@@ -48,7 +43,7 @@ export const ProductsPage: React.FC = () => {
         async (id: number) => {
             if (id) {
                 if (!currentUser.isAdmin) {
-                    setSnackBarError("Only admin users can edit the price of a product");
+                    setSnackBarError('Only admin users can edit the price of a product');
                     return;
                 }
 
@@ -77,12 +72,12 @@ export const ProductsPage: React.FC = () => {
         setEditingProduct({ ...editingProduct, price: event.target.value });
 
         if (!isValidNumber) {
-            setPriceError("Only numbers are allowed");
+            setPriceError('Only numbers are allowed');
         } else {
             if (!priceRegex.test(event.target.value)) {
-                setPriceError("Invalid price format");
+                setPriceError('Invalid price format');
             } else if (+event.target.value > 999.99) {
-                setPriceError("The max possible price is 999.99");
+                setPriceError('The max possible price is 999.99');
             } else {
                 setPriceError(undefined);
             }
@@ -103,9 +98,7 @@ export const ProductsPage: React.FC = () => {
             try {
                 await storeApi.post(editedRemoteProduct);
 
-                setSnackBarSuccess(
-                    `Price ${editingProduct.price} for '${editingProduct.title}' updated`
-                );
+                setSnackBarSuccess(`Price ${editingProduct.price} for '${editingProduct.title}' updated`);
                 setEditingProduct(undefined);
                 reload();
             } catch (error) {
@@ -120,43 +113,43 @@ export const ProductsPage: React.FC = () => {
 
     const columns: GridColDef<Product>[] = useMemo(
         () => [
-            { ...baseColumn, field: "id", headerName: "ID", width: 70 },
-            { ...baseColumn, field: "title", headerName: "Title", width: 600 },
+            { ...baseColumn, field: 'id', headerName: 'ID', width: 70 },
+            { ...baseColumn, field: 'title', headerName: 'Title', width: 600 },
             {
                 ...baseColumn,
-                field: "image",
-                headerName: "Image",
+                field: 'image',
+                headerName: 'Image',
                 width: 300,
-                headerAlign: "center",
-                align: "center",
+                headerAlign: 'center',
+                align: 'center',
                 renderCell: params => {
                     return <ProductImage src={params.row.image} />;
                 },
             },
             {
                 ...baseColumn,
-                field: "price",
-                headerName: "Price",
-                type: "number",
+                field: 'price',
+                headerName: 'Price',
+                type: 'number',
                 width: 180,
-                headerAlign: "center",
-                align: "center",
+                headerAlign: 'center',
+                align: 'center',
                 valueFormatter: (params: GridValueFormatterParams<number>) => {
                     if (params.value == null) {
-                        return "";
+                        return '';
                     }
                     return `$${params.value}`;
                 },
             },
             {
                 ...baseColumn,
-                field: "status",
-                headerName: "Status",
+                field: 'status',
+                headerName: 'Status',
                 width: 120,
-                headerAlign: "center",
-                align: "center",
+                headerAlign: 'center',
+                align: 'center',
                 renderCell: params => {
-                    const status = +params.row.price === 0 ? "inactive" : "active";
+                    const status = +params.row.price === 0 ? 'inactive' : 'active';
 
                     return (
                         <StatusContainer status={status}>
@@ -168,8 +161,8 @@ export const ProductsPage: React.FC = () => {
             {
                 ...baseColumn,
 
-                field: "actions",
-                type: "actions",
+                field: 'actions',
+                type: 'actions',
                 width: 100,
                 getActions: cell => [
                     <GridActionsCellItem
@@ -184,12 +177,12 @@ export const ProductsPage: React.FC = () => {
     );
 
     return (
-        <Stack direction="column" sx={{ minHeight: "100vh", overflow: "scroll" }}>
+        <Stack direction="column" sx={{ minHeight: '100vh', overflow: 'scroll' }}>
             <MainAppBar />
 
             <MainContainer maxWidth="xl" sx={{ flex: 1 }}>
                 <Typography variant="h3" component="h1" gutterBottom>
-                    {"Product price updater"}
+                    {'Product price updater'}
                 </Typography>
                 <DataGrid<Product>
                     rowHeight={300}
@@ -206,7 +199,7 @@ export const ProductsPage: React.FC = () => {
             <Footer />
 
             <Snackbar
-                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
                 open={snackBarError !== undefined}
                 autoHideDuration={2000}
                 onClose={() => setSnackBarError(undefined)}
@@ -215,7 +208,7 @@ export const ProductsPage: React.FC = () => {
             </Snackbar>
 
             <Snackbar
-                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
                 open={snackBarSuccess !== undefined}
                 autoHideDuration={2000}
                 onClose={() => setSnackBarSuccess(undefined)}
@@ -226,7 +219,7 @@ export const ProductsPage: React.FC = () => {
             {editingProduct && (
                 <ConfirmationDialog
                     isOpen={true}
-                    title={"Update price"}
+                    title={'Update price'}
                     onSave={saveEditPrice}
                     onCancel={cancelEditPrice}
                 >
@@ -238,7 +231,7 @@ export const ProductsPage: React.FC = () => {
                         <Stack direction="column" justifyContent="space-evenly">
                             <Typography variant="body1">{editingProduct.title}</Typography>
                             <TextField
-                                label={"Price"}
+                                label={'Price'}
                                 value={editingProduct.price}
                                 onChange={handleChangePrice}
                                 error={priceError !== undefined}
@@ -263,7 +256,7 @@ const ProductImage = styled.img`
     object-fit: contain;
 `;
 
-type ProductStatus = "active" | "inactive";
+type ProductStatus = 'active' | 'inactive';
 
 export interface Product {
     id: number;
@@ -273,7 +266,7 @@ export interface Product {
 }
 
 const StatusContainer = styled.div<{ status: ProductStatus }>`
-    background: ${props => (props.status === "inactive" ? "red" : "green")};
+    background: ${props => (props.status === 'inactive' ? 'red' : 'green')};
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -288,7 +281,7 @@ function buildProduct(remoteProduct: RemoteProduct): Product {
         id: remoteProduct.id,
         title: remoteProduct.title,
         image: remoteProduct.image,
-        price: remoteProduct.price.toLocaleString("en-US", {
+        price: remoteProduct.price.toLocaleString('en-US', {
             maximumFractionDigits: 2,
             minimumFractionDigits: 2,
         }),
