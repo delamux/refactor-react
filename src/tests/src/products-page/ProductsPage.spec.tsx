@@ -1,36 +1,34 @@
-import { render, RenderResult, screen } from "@testing-library/react";
-import { test, expect, describe, beforeAll, afterAll, afterEach } from "vitest";
-import { ProductsPage } from "../../../pages/ProductsPage.tsx";
-import { AppProvider } from "../../../context/AppProvider.tsx";
-import { ReactNode } from "react";
-import { MockWebServer } from "../../MockWebServer.ts";
-import productsResponse from "./data/productsResponse.json";
+import { render, RenderResult, screen } from '@testing-library/react';
+import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
+import { ProductsPage } from '../../../pages/ProductsPage.tsx';
+import { AppProvider } from '../../../context/AppProvider.tsx';
+import { ReactNode } from 'react';
+import { givenEmptyProducts, givenProducts } from './ProductsPage.fixture.ts';
+import { MockWebServer } from '../../MockWebServer.ts';
 
-const mockWebServer = new MockWebServer();
-
-describe("Products Page component", () => {
+export const mockWebServer = new MockWebServer();
+describe('Products Page component', () => {
     beforeAll(() => mockWebServer.start());
     afterEach(() => mockWebServer.resetHandlers());
     afterAll(() => mockWebServer.close());
-    test("Loads and displays title", () => {
-        givenProducts();
+
+    it('Loads and displays title', async () => {
+        givenProducts(mockWebServer);
         renderComponent(<ProductsPage />);
 
-        const titleElement = screen.getByRole("heading", { name: /product price updater/i });
+        const titleElement = await screen.getByRole('heading', { name: /product price updater/i });
         expect(titleElement).toBeInTheDocument();
     });
-});
 
-function givenProducts() {
-    mockWebServer.addRequestHandlers([
-        {
-            method: "get",
-            endpoint: "https://fakestoreapi.com/products",
-            response: productsResponse,
-            httpStatusCode: 200,
-        },
-    ]);
-}
+    it('Should return only table headers when no products data', async () => {
+        givenEmptyProducts(mockWebServer);
+
+        renderComponent(<ProductsPage />);
+        const rows = await screen.findAllByRole('row');
+
+        expect(rows.length).toBe(1);
+    });
+});
 
 function renderComponent(component: ReactNode): RenderResult {
     return render(<AppProvider>{component}</AppProvider>);
