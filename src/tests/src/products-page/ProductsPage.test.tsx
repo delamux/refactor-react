@@ -5,7 +5,7 @@ import { AppProvider } from '../../../context/AppProvider.tsx';
 import { ReactNode } from 'react';
 import { givenEmptyProducts, givenProducts } from './ProductsPage.fixture.ts';
 import { MockWebServer } from '../../MockWebServer.ts';
-import { verifyHeaders } from './ProductsPage.helpers.tsx';
+import { verifyHeaders, verifyRows, waitForTableIsLoaded } from './ProductsPage.helpers.tsx';
 
 export const mockWebServer = new MockWebServer();
 describe('Products Page component', () => {
@@ -29,6 +29,19 @@ describe('Products Page component', () => {
 
         verifyHeaders(rows[0]);
         expect(rows.length).toBe(1);
+    });
+
+    it('Should return only table headers when no products data', async () => {
+        const products = givenProducts(mockWebServer);
+        renderComponent(<ProductsPage />);
+
+        await waitForTableIsLoaded();
+        const allRows = await screen.findAllByRole('row');
+
+        const [header, ...rows] = allRows;
+
+        verifyHeaders(header);
+        verifyRows(rows, products);
     });
 });
 

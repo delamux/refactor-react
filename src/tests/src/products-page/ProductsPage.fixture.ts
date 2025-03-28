@@ -1,7 +1,8 @@
 import { MockWebServer } from '../../MockWebServer.ts';
 import productsResponse from './data/productsResponse.json';
+import { RemoteProduct } from "../../../api/StoreApi.ts";
 
-export function givenProducts(mockWebServer: MockWebServer) {
+export function givenProducts(mockWebServer: MockWebServer): RemoteProduct[] {
     mockWebServer.addRequestHandlers([
         {
             method: 'get',
@@ -10,6 +11,8 @@ export function givenProducts(mockWebServer: MockWebServer) {
             httpStatusCode: 200,
         },
     ]);
+
+    return productsResponse;
 }
 
 export function givenEmptyProducts(mockWebServer: MockWebServer) {
