@@ -9,42 +9,42 @@ import { verifyHeaders, verifyRows, waitForTableIsLoaded } from './ProductsPage.
 
 export const mockWebServer = new MockWebServer();
 describe('Products Page component', () => {
-    beforeAll(() => mockWebServer.start());
-    afterEach(() => mockWebServer.resetHandlers());
-    afterAll(() => mockWebServer.close());
+  beforeAll(() => mockWebServer.start());
+  afterEach(() => mockWebServer.resetHandlers());
+  afterAll(() => mockWebServer.close());
 
-    it('Loads and displays title', async () => {
-        givenProducts(mockWebServer);
-        renderComponent(<ProductsPage />);
+  it('Loads and displays title', async () => {
+    givenProducts(mockWebServer);
+    renderComponent(<ProductsPage />);
 
-        const titleElement = await screen.getByRole('heading', { name: /product price updater/i });
-        expect(titleElement).toBeInTheDocument();
-    });
+    const titleElement = await screen.getByRole('heading', { name: /product price updater/i });
+    expect(titleElement).toBeInTheDocument();
+  });
 
-    it('Should return only table headers when no products data', async () => {
-        givenEmptyProducts(mockWebServer);
+  it('Should return only table headers when no products data', async () => {
+    givenEmptyProducts(mockWebServer);
 
-        renderComponent(<ProductsPage />);
-        const rows = await screen.findAllByRole('row');
+    renderComponent(<ProductsPage />);
+    const rows = await screen.findAllByRole('row');
 
-        verifyHeaders(rows[0]);
-        expect(rows.length).toBe(1);
-    });
+    verifyHeaders(rows[0]);
+    expect(rows.length).toBe(1);
+  });
 
-    it('Should return only table headers when no products data', async () => {
-        const products = givenProducts(mockWebServer);
-        renderComponent(<ProductsPage />);
+  it('Should return only table headers when no products data', async () => {
+    const products = givenProducts(mockWebServer);
+    renderComponent(<ProductsPage />);
 
-        await waitForTableIsLoaded();
-        const allRows = await screen.findAllByRole('row');
+    await waitForTableIsLoaded();
+    const allRows = await screen.findAllByRole('row');
 
-        const [header, ...rows] = allRows;
+    const [header, ...rows] = allRows;
 
-        verifyHeaders(header);
-        verifyRows(rows, products);
-    });
+    verifyHeaders(header);
+    verifyRows(rows, products);
+  });
 });
 
 function renderComponent(component: ReactNode): RenderResult {
-    return render(<AppProvider>{component}</AppProvider>);
+  return render(<AppProvider>{component}</AppProvider>);
 }
