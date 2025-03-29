@@ -27,6 +27,7 @@ export const ProductsPage: React.FC = () => {
   const [editingProduct, setEditingProduct] = useState<Product | undefined>(undefined);
   const [priceError, setPriceError] = useState<string | undefined>(undefined);
 
+  // REFACTOR: get all products
   useEffect(() => {
     storeApi.getAll().then(response => {
       console.debug('Reloading', reloadKey);
@@ -39,6 +40,8 @@ export const ProductsPage: React.FC = () => {
     });
   }, [reloadKey]);
 
+
+  // REFACTOR update one product
   const updatingQuantity = useCallback(
     async (id: number) => {
       if (id) {
@@ -61,10 +64,12 @@ export const ProductsPage: React.FC = () => {
     [currentUser]
   );
 
+  // REFACTOR validate edit proce
   const cancelEditPrice = useCallback(() => {
     setEditingProduct(undefined);
   }, []);
 
+  // REFACTOR validation change price
   function handleChangePrice(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void {
     if (!editingProduct) return;
 
@@ -84,6 +89,7 @@ export const ProductsPage: React.FC = () => {
     }
   }
 
+  // REFACTOR: Save edit price
   async function saveEditPrice(): Promise<void> {
     if (editingProduct) {
       const remoteProduct = await storeApi.get(editingProduct.id);
@@ -111,6 +117,7 @@ export const ProductsPage: React.FC = () => {
     }
   }
 
+  // REFACTOR: columns to render
   const columns: GridColDef<Product>[] = useMemo(
     () => [
       { ...baseColumn, field: 'id', headerName: 'ID', width: 70 },
@@ -278,6 +285,7 @@ const StatusContainer = styled.div<{ status: ProductStatus }>`
   width: 100px;
 `;
 
+// REFACTOR: build mapper
 function buildProduct(remoteProduct: RemoteProduct): Product {
   return {
     id: remoteProduct.id,
