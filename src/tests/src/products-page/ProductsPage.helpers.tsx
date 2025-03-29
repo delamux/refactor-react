@@ -110,3 +110,9 @@ export async function changeUserRoleToNonAdmin() {
   });
   await userEvent.click(changeUserToNonAdmin);
 }
+
+export function verifySaveButtonIsDisabled(dialog: HTMLElement) {
+  const dialogScope = within(dialog);
+  const saveButton = dialogScope.getByRole('button', { name: /save/i });
+  expect(saveButton.closest("button")).toBeDisabled();
+}

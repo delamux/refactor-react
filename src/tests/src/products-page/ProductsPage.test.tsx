@@ -15,9 +15,9 @@ import {
   verifyError,
   verifyHeaders,
   verifyProductPriceAndStatus,
-  verifyRows,
+  verifyRows, verifySaveButtonIsDisabled,
   waitForTableIsLoaded,
-} from './ProductsPage.helpers.tsx';
+} from "./ProductsPage.helpers.tsx";
 import { RemoteProduct } from '../../../api/StoreApi.ts';
 
 export const mockWebServer = new MockWebServer();
@@ -83,6 +83,7 @@ describe('Edit Price dialog', () => {
     const negativePrice = '-1';
     await insertPrice(dialog, negativePrice);
     verifyError(dialog, 'Invalid price format');
+    verifySaveButtonIsDisabled(dialog);
   });
 
   it('Should show error for a price above the maximum value', async () => {
@@ -92,6 +93,7 @@ describe('Edit Price dialog', () => {
     const overPriceValueAllowed = '1000';
     await insertPrice(dialog, overPriceValueAllowed);
     verifyError(dialog, 'The max possible price is 999.99');
+    verifySaveButtonIsDisabled(dialog);
   });
 
   it('Should show error for a not number character', async () => {
@@ -101,6 +103,7 @@ describe('Edit Price dialog', () => {
     const notValidNumber = 'a';
     await insertPrice(dialog, notValidNumber);
     verifyError(dialog, 'Only numbers are allowed');
+    verifySaveButtonIsDisabled(dialog);
   });
 
   it('Should edit the product to a valid price 130.99 and show the status active', async () => {

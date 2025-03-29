@@ -218,7 +218,12 @@ export const ProductsPage: React.FC = () => {
       </Snackbar>
 
       {editingProduct && (
-        <ConfirmationDialog isOpen={true} title={'Update price'} onSave={saveEditPrice} onCancel={cancelEditPrice}>
+        <ConfirmationDialog
+          isOpen={true}
+          title={'Update price'}
+          onSave={saveEditPrice}
+          onCancel={cancelEditPrice}
+          disableSave={ priceError!== undefined}>
           <Stack direction="row">
             <Box width={250}>
               <ProductImage src={editingProduct.image} />
