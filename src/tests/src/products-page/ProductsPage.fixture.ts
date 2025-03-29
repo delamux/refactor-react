@@ -1,6 +1,6 @@
 import { MockWebServer } from '../../MockWebServer.ts';
 import productsResponse from './data/productsResponse.json';
-import { RemoteProduct } from '../../../api/StoreApi.ts';
+import { RemoteProduct } from '../../../data/api/StoreApi.ts';
 
 export function givenProducts(mockWebServer: MockWebServer): RemoteProduct[] {
   mockWebServer.addRequestHandlers([

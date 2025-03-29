@@ -1,7 +1,7 @@
 import { render, RenderResult, screen } from '@testing-library/react';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
-import { ProductsPage } from '../../../pages/ProductsPage.tsx';
-import { AppProvider } from '../../../context/AppProvider.tsx';
+import { ProductsPage } from '../../../presentation/pages/ProductsPage.tsx';
+import { AppProvider } from '../../../presentation/context/AppProvider.tsx';
 import { ReactNode } from 'react';
 import { givenEmptyProducts, givenProducts } from './ProductsPage.fixture.ts';
 import { MockWebServer } from '../../MockWebServer.ts';
@@ -19,7 +19,7 @@ import {
   verifySaveButtonIsDisabled,
   waitForTableIsLoaded,
 } from './ProductsPage.helpers.tsx';
-import { RemoteProduct } from '../../../api/StoreApi.ts';
+import { RemoteProduct } from '../../../data/api/StoreApi.ts';
 
 export const mockWebServer = new MockWebServer();
 

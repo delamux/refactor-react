@@ -1,5 +1,5 @@
 // REFACTOR: build mapper
-import { RemoteProduct, StoreApi } from "../api/StoreApi.ts";
+import { RemoteProduct, StoreApi } from "../../data/api/StoreApi.ts";
 import { useEffect, useState } from "react";
 import { useReload } from "./useReload.ts";
 
