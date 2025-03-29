@@ -15,9 +15,10 @@ import {
   verifyError,
   verifyHeaders,
   verifyProductPriceAndStatus,
-  verifyRows, verifySaveButtonIsDisabled,
+  verifyRows,
+  verifySaveButtonIsDisabled,
   waitForTableIsLoaded,
-} from "./ProductsPage.helpers.tsx";
+} from './ProductsPage.helpers.tsx';
 import { RemoteProduct } from '../../../api/StoreApi.ts';
 
 export const mockWebServer = new MockWebServer();
