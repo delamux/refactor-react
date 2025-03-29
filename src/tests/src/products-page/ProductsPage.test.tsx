@@ -7,13 +7,13 @@ import { givenEmptyProducts, givenProducts } from './ProductsPage.fixture.ts';
 import { MockWebServer } from '../../MockWebServer.ts';
 import {
   insertPrice,
-  openDialogToEditPrice,
+  openDialogToEditPrice, savePrice,
   verifyDialog,
   verifyError,
-  verifyHeaders,
+  verifyHeaders, verifyProductPriceAndStatus,
   verifyRows,
   waitForTableIsLoaded,
-} from './ProductsPage.helpers.tsx';
+} from "./ProductsPage.helpers.tsx";
 import { RemoteProduct } from '../../../api/StoreApi.ts';
 
 export const mockWebServer = new MockWebServer();
@@ -97,6 +97,36 @@ describe('Edit Price dialog', () => {
     const notValidNumber = 'a';
     await insertPrice(dialog, notValidNumber);
     verifyError(dialog, 'Only numbers are allowed');
+  });
+
+  it('Should edit the product to a valid price 130.99 and show the status active', async () => {
+    const productIndex = 0;
+    const dialog = await openDialogToEditPrice(productIndex);
+
+    const validPrice = '130.99';
+    await insertPrice(dialog, validPrice);
+    await savePrice(dialog);
+
+
+    const allRows = await screen.findAllByRole('row');
+
+    const [, ...rows] = allRows;
+    verifyProductPriceAndStatus(rows[productIndex], validPrice, 'active');
+  });
+
+  it('Should edit the price to $0.00 and show the status inactive', async () => {
+    const productIndex = 0;
+    const dialog = await openDialogToEditPrice(productIndex);
+
+    const validPrice = '0.00';
+    await insertPrice(dialog, validPrice);
+    await savePrice(dialog);
+
+
+    const allRows = await screen.findAllByRole('row');
+
+    const [, ...rows] = allRows;
+    verifyProductPriceAndStatus(rows[productIndex], validPrice, 'inactive');
   });
 });
 

@@ -80,3 +80,18 @@ export function verifyError(dialog: HTMLElement, error: string) {
   const dialogScope = within(dialog);
   dialogScope.findByText(error);
 }
+
+export async function savePrice(dialog: HTMLElement) {
+  const dialogScope = within(dialog);
+  const saveButton = dialogScope.getByRole('button', { name:  /save/i });
+  await userEvent.click(saveButton);
+}
+
+export function verifyProductPriceAndStatus(row: HTMLElement, price: string, status: string) {
+  const rowScope = within(row);
+  const cells = rowScope.getAllByRole('cell');
+  const priceIndex = 3;
+  const statusIndex = 4;
+  within(cells[priceIndex]).getByText(`$${price}`);
+  within(cells[statusIndex]).getByText(new RegExp(status, 'i'));
+}
