@@ -6,8 +6,10 @@ import styled from '@emotion/styled';
 import { ChangeEvent, useCallback, useMemo, useState } from 'react';
 import { useAppContext } from '../context/useAppContext.ts';
 import { ConfirmationDialog } from '../components/ConfirmationDialog.tsx';
-import { buildProduct, Product, ProductStatus, useProducts } from "../hooks/useProducts.ts";
+import { useProducts } from "../hooks/useProducts.ts";
 import { StoreApi } from "../../data/api/StoreApi.ts";
+import { Product, ProductStatus } from "../../domain/Product.ts";
+import { buildProduct, GetProductsUseCase } from "../../domain/GetProductsUseCase.ts";
 
 const baseColumn: Partial<GridColDef<Product>> = {
   disableColumnMenu: true,
@@ -15,6 +17,9 @@ const baseColumn: Partial<GridColDef<Product>> = {
 };
 
 const storeApi = new StoreApi();
+function createGetProductsUseCase() {
+  return new GetProductsUseCase(storeApi);
+}
 
 export const ProductsPage: React.FC = () => {
   const { currentUser } = useAppContext();
@@ -25,7 +30,8 @@ export const ProductsPage: React.FC = () => {
   const [editingProduct, setEditingProduct] = useState<Product | undefined>(undefined);
   const [priceError, setPriceError] = useState<string | undefined>(undefined);
 
-  const { products, reload } = useProducts(storeApi);
+  const getProductsUseCase = useMemo(() => createGetProductsUseCase(), []);
+  const { products, reload } = useProducts(getProductsUseCase);
 
   // REFACTOR update one product
   const updatingQuantity = useCallback(
