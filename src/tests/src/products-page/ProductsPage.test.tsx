@@ -1,4 +1,4 @@
-import { render, RenderResult, screen } from '@testing-library/react';
+import { render, RenderResult, screen } from "@testing-library/react";
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { ProductsPage } from '../../../pages/ProductsPage.tsx';
 import { AppProvider } from '../../../context/AppProvider.tsx';
@@ -6,8 +6,9 @@ import { ReactNode } from 'react';
 import { givenEmptyProducts, givenProducts } from './ProductsPage.fixture.ts';
 import { MockWebServer } from '../../MockWebServer.ts';
 import {
+  changeUserRoleToNonAdmin,
   insertPrice,
-  openDialogToEditPrice, savePrice,
+  openDialogToEditPrice, savePrice, tryToOpenDialogToEditPrice,
   verifyDialog,
   verifyError,
   verifyHeaders, verifyProductPriceAndStatus,
@@ -127,6 +128,13 @@ describe('Edit Price dialog', () => {
 
     const [, ...rows] = allRows;
     verifyProductPriceAndStatus(rows[productIndex], validPrice, 'inactive');
+  });
+
+  it('Should show an error when edit price for NON ADMIN USER', async () => {
+    const productIndex = 0;
+    await changeUserRoleToNonAdmin();
+    await tryToOpenDialogToEditPrice(productIndex);
+    screen.getByText(/only admin users can edit the price of a product/i)
   });
 });
 
