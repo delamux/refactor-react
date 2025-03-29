@@ -6,10 +6,10 @@ import styled from '@emotion/styled';
 import { ChangeEvent, useCallback, useMemo, useState } from 'react';
 import { useAppContext } from '../context/useAppContext.ts';
 import { ConfirmationDialog } from '../components/ConfirmationDialog.tsx';
-import { useProducts } from "../hooks/useProducts.ts";
-import { StoreApi } from "../../data/api/StoreApi.ts";
-import { Product, ProductStatus } from "../../domain/Product.ts";
-import { buildProduct, GetProductsUseCase } from "../../domain/GetProductsUseCase.ts";
+import { useProducts } from '../hooks/useProducts.ts';
+import { StoreApi } from '../../data/api/StoreApi.ts';
+import { Product, ProductStatus } from '../../domain/Product.ts';
+import { buildProduct, GetProductsUseCase } from '../../domain/GetProductsUseCase.ts';
 
 const baseColumn: Partial<GridColDef<Product>> = {
   disableColumnMenu: true,
@@ -256,7 +256,6 @@ const ProductImage = styled.img`
   height: 200px;
   object-fit: contain;
 `;
-
 
 const StatusContainer = styled.div<{ status: ProductStatus }>`
   background: ${props => (props.status === 'inactive' ? 'red' : 'green')};

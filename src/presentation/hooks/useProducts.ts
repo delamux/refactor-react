@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
-import { useReload } from "./useReload.ts";
-import { Product } from "../../domain/Product.ts";
-import { GetProductsUseCase } from "../../domain/GetProductsUseCase.ts";
+import { useEffect, useState } from 'react';
+import { useReload } from './useReload.ts';
+import { Product } from '../../domain/Product.ts';
+import { GetProductsUseCase } from '../../domain/GetProductsUseCase.ts';
 
 export const useProducts = (getProductsUseCase: GetProductsUseCase) => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -12,4 +12,4 @@ export const useProducts = (getProductsUseCase: GetProductsUseCase) => {
   }, [reloadKey, getProductsUseCase]);
 
   return { products, reload };
-}
+};

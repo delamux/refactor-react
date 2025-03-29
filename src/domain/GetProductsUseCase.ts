@@ -1,5 +1,5 @@
-import { RemoteProduct, StoreApi } from "../data/api/StoreApi.ts";
-import { Product } from "./Product.ts";
+import { RemoteProduct, StoreApi } from '../data/api/StoreApi.ts';
+import { Product } from './Product.ts';
 
 export class GetProductsUseCase {
   constructor(private readonly storeApi: StoreApi) {}
