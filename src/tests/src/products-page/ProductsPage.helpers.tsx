@@ -53,17 +53,7 @@ export function verifyDialog(dialog: HTMLElement, product: RemoteProduct) {
 }
 
 export async function openDialogToEditPrice(productIndex: number): Promise<HTMLElement> {
-  const allRows = await screen.getAllByRole('row');
-  const [, ...rows] = allRows;
-
-  const row = rows[productIndex];
-  const rowScope = within(row);
-
-  await userEvent.click(rowScope.getByRole('menuitem'));
-
-  const updatePriceMenuItem = await screen.findByRole('menuitem', { name: /update price/i });
-
-  await userEvent.click(updatePriceMenuItem);
+  await tryToOpenDialogToEditPrice(productIndex);
 
   return screen.getByRole('dialog');
 }
@@ -83,7 +73,7 @@ export function verifyError(dialog: HTMLElement, error: string) {
 
 export async function savePrice(dialog: HTMLElement) {
   const dialogScope = within(dialog);
-  const saveButton = dialogScope.getByRole('button', { name:  /save/i });
+  const saveButton = dialogScope.getByRole('button', { name: /save/i });
   await userEvent.click(saveButton);
 }
 
@@ -95,7 +85,6 @@ export function verifyProductPriceAndStatus(row: HTMLElement, price: string, sta
   within(cells[priceIndex]).getByText(`$${price}`);
   within(cells[statusIndex]).getByText(new RegExp(status, 'i'));
 }
-
 
 export async function tryToOpenDialogToEditPrice(productIndex: number): Promise<void> {
   const allRows = await screen.getAllByRole('row');
@@ -113,11 +102,11 @@ export async function tryToOpenDialogToEditPrice(productIndex: number): Promise<
 
 export async function changeUserRoleToNonAdmin() {
   const userButton = screen.getByRole('button', {
-    name: /^user:.*$/i
+    name: /^user:.*$/i,
   });
   await userEvent.click(userButton);
   const changeUserToNonAdmin = await screen.findByRole('menuitem', {
-    name: /non admin user/i
-  })
+    name: /non admin user/i,
+  });
   await userEvent.click(changeUserToNonAdmin);
 }

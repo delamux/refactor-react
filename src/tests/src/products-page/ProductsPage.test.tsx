@@ -1,4 +1,4 @@
-import { render, RenderResult, screen } from "@testing-library/react";
+import { render, RenderResult, screen } from '@testing-library/react';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { ProductsPage } from '../../../pages/ProductsPage.tsx';
 import { AppProvider } from '../../../context/AppProvider.tsx';
@@ -8,13 +8,16 @@ import { MockWebServer } from '../../MockWebServer.ts';
 import {
   changeUserRoleToNonAdmin,
   insertPrice,
-  openDialogToEditPrice, savePrice, tryToOpenDialogToEditPrice,
+  openDialogToEditPrice,
+  savePrice,
+  tryToOpenDialogToEditPrice,
   verifyDialog,
   verifyError,
-  verifyHeaders, verifyProductPriceAndStatus,
+  verifyHeaders,
+  verifyProductPriceAndStatus,
   verifyRows,
   waitForTableIsLoaded,
-} from "./ProductsPage.helpers.tsx";
+} from './ProductsPage.helpers.tsx';
 import { RemoteProduct } from '../../../api/StoreApi.ts';
 
 export const mockWebServer = new MockWebServer();
@@ -108,7 +111,6 @@ describe('Edit Price dialog', () => {
     await insertPrice(dialog, validPrice);
     await savePrice(dialog);
 
-
     const allRows = await screen.findAllByRole('row');
 
     const [, ...rows] = allRows;
@@ -123,7 +125,6 @@ describe('Edit Price dialog', () => {
     await insertPrice(dialog, validPrice);
     await savePrice(dialog);
 
-
     const allRows = await screen.findAllByRole('row');
 
     const [, ...rows] = allRows;
@@ -134,7 +135,7 @@ describe('Edit Price dialog', () => {
     const productIndex = 0;
     await changeUserRoleToNonAdmin();
     await tryToOpenDialogToEditPrice(productIndex);
-    screen.getByText(/only admin users can edit the price of a product/i)
+    screen.getByText(/only admin users can edit the price of a product/i);
   });
 });
 
