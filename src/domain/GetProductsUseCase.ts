@@ -1,25 +1,11 @@
-import { RemoteProduct, StoreApi } from '../data/api/StoreApi.ts';
 import { Product } from './Product.ts';
+import { ProductRepository } from "./ProductRepository.ts";
 
 export class GetProductsUseCase {
-  constructor(private readonly storeApi: StoreApi) {}
+  constructor(private readonly repository: ProductRepository) {}
 
   async execute(): Promise<Product[]> {
-    const response = await this.storeApi.getAll();
-    const remoteProducts = response as RemoteProduct[];
 
-    return remoteProducts.map(buildProduct);
+    return this.repository.getAll();
   }
-}
-
-export function buildProduct(remoteProduct: RemoteProduct): Product {
-  return {
-    id: remoteProduct.id,
-    title: remoteProduct.title,
-    image: remoteProduct.image,
-    price: remoteProduct.price.toLocaleString('en-US', {
-      maximumFractionDigits: 2,
-      minimumFractionDigits: 2,
-    }),
-  };
 }
