@@ -6,26 +6,14 @@ import styled from '@emotion/styled';
 import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { ConfirmationDialog } from '../components/ConfirmationDialog.tsx';
 import { useProducts } from '../hooks/useProducts.ts';
-import { StoreApi } from '../../data/api/StoreApi.ts';
 import { Product, ProductStatus } from '../../domain/Product.ts';
-import { GetProductsUseCase } from '../../domain/GetProductsUseCase.ts';
-import { ProductApiRepository } from '../../data/ProductApiRepository.ts';
-import { GetProductByIdUseCase } from '../../domain/GetProductByIdUseCase.ts';
+import { CompositionRoot } from '../../CompositionRoot.ts';
 
 const baseColumn: Partial<GridColDef<Product>> = {
   disableColumnMenu: true,
   sortable: false,
 };
 
-const storeApi = new StoreApi();
-const repository = new ProductApiRepository(storeApi);
-function createGetProductsUseCase() {
-  return new GetProductsUseCase(repository);
-}
-
-function createGetProductByIdUseCase(): GetProductByIdUseCase {
-  return new GetProductByIdUseCase(repository);
-}
 
 export const ProductsPage: React.FC = () => {
   /**
@@ -37,8 +25,10 @@ export const ProductsPage: React.FC = () => {
 
   const [priceError, setPriceError] = useState<string | undefined>(undefined);
 
-  const getProductsUseCase = useMemo(() => createGetProductsUseCase(), []);
-  const getProductByIdUseCase = useMemo(() => createGetProductByIdUseCase(), []);
+  const getProductsUseCase = useMemo(() => CompositionRoot.getInstance().provideGetProductsUseCase(), []);
+  const getProductByIdUseCase = useMemo(() => CompositionRoot.getInstance().provideGetProductByIdUseCase(), []);
+  // TODO remove in next refactors
+  const storeApi = useMemo(() => CompositionRoot.getInstance().provideStoreApi(), []);
 
   const {
     products,
