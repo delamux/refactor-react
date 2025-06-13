@@ -9,7 +9,7 @@ import { useProducts } from '../hooks/useProducts.ts';
 import { StoreApi } from '../../data/api/StoreApi.ts';
 import { Product, ProductStatus } from '../../domain/Product.ts';
 import { GetProductsUseCase } from '../../domain/GetProductsUseCase.ts';
-import { ProductApiRepository } from "../../data/ProductApiRepository.ts";
+import { ProductApiRepository } from '../../data/ProductApiRepository.ts';
 
 const baseColumn: Partial<GridColDef<Product>> = {
   disableColumnMenu: true,
@@ -40,15 +40,13 @@ export const ProductsPage: React.FC = () => {
     editingProduct,
     setEditingProduct,
     cancelEditPrice,
-    error: productError
-  } = useProducts(getProductsUseCase,  storeApi);
+    error: productError,
+  } = useProducts(getProductsUseCase, storeApi);
 
   // REFACTOR update one product
-  useEffect(() => setSnackBarError(productError), [productError])
-
+  useEffect(() => setSnackBarError(productError), [productError]);
 
   // REFACTOR validate edit proce
-
 
   // REFACTOR validation change price
   function handleChangePrice(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void {

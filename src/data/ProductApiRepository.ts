@@ -1,6 +1,6 @@
-import { RemoteProduct, StoreApi } from "./api/StoreApi.ts";
-import { Product } from "../domain/Product.ts";
-import { ProductRepository } from "../domain/ProductRepository.ts";
+import { RemoteProduct, StoreApi } from './api/StoreApi.ts';
+import { Product } from '../domain/Product.ts';
+import { ProductRepository } from '../domain/ProductRepository.ts';
 
 export class ProductApiRepository implements ProductRepository {
   constructor(private readonly storeApi: StoreApi) {}
@@ -18,7 +18,6 @@ export class ProductApiRepository implements ProductRepository {
     return buildProduct(response);
   }
 }
-
 
 export function buildProduct(remoteProduct: RemoteProduct): Product {
   return {
