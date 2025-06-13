@@ -5,6 +5,7 @@ import { GetProductsUseCase } from '../../domain/GetProductsUseCase.ts';
 import { useAppContext } from '../context/useAppContext.ts';
 import { GetProductByIdUseCase } from '../../domain/GetProductByIdUseCase.ts';
 import { ProductNotFoundError } from '../../domain/ProductRepository.ts';
+import { Price, ValidationError } from '../../domain/valueObjects/Price.ts';
 
 export const useProducts = (getProductsUseCase: GetProductsUseCase, getProductByIdUseCase: GetProductByIdUseCase) => {
   const { currentUser } = useAppContext();
@@ -48,29 +49,30 @@ export const useProducts = (getProductsUseCase: GetProductsUseCase, getProductBy
     setEditingProduct(undefined);
   }, [setEditingProduct]);
 
-  function onChangePrice(priceProvided: string) {
-    const price = Number(priceProvided);
+  function onChangePrice(price: string) {
     if (!editingProduct) return;
-
-
-    const isValidNumber = !isNaN(price);
-    setEditingProduct({ ...editingProduct, price: priceProvided });
-
-    if (!isValidNumber) {
-      setPriceError('Only numbers are allowed');
-    } else {
-      if (!priceRegex.test(priceProvided)) {
-        setPriceError('Invalid price format');
-      } else if (price > 999.99) {
-        setPriceError('The max possible price is 999.99');
+    try {
+      setEditingProduct({ ...editingProduct, price });
+      Price.create(price);
+      setPriceError(undefined);
+    } catch (error) {
+      if (error instanceof ValidationError) {
+        setPriceError(error.message);
       } else {
-        setPriceError(undefined);
+        setError('Unknown error occurred while updating product quantity');
       }
     }
-
   }
 
-  return { products, reload, updatingQuantity, editingProduct, setEditingProduct, error, cancelEditPrice, priceError, onChangePrice };
+  return {
+    products,
+    reload,
+    updatingQuantity,
+    editingProduct,
+    setEditingProduct,
+    error,
+    cancelEditPrice,
+    priceError,
+    onChangePrice,
+  };
 };
-
-const priceRegex = /^\d+(\.\d{1,2})?$/;

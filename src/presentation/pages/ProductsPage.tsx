@@ -22,7 +22,6 @@ export const ProductsPage: React.FC = () => {
 
   const [snackBarSuccess, setSnackBarSuccess] = useState<string>();
 
-
   const getProductsUseCase = useMemo(() => CompositionRoot.getInstance().provideGetProductsUseCase(), []);
   const getProductByIdUseCase = useMemo(() => CompositionRoot.getInstance().provideGetProductByIdUseCase(), []);
   // TODO remove in next refactors
@@ -37,7 +36,7 @@ export const ProductsPage: React.FC = () => {
     cancelEditPrice,
     error: productError,
     priceError,
-    onChangePrice
+    onChangePrice,
   } = useProducts(getProductsUseCase, getProductByIdUseCase);
 
   useEffect(() => setSnackBarError(productError), [productError]);
