@@ -14,6 +14,7 @@ export const useProducts = (getProductsUseCase: GetProductsUseCase, getProductBy
   const [editingProduct, setEditingProduct] = useState<Product | undefined>(undefined);
 
   const [error, setError] = useState<string>();
+  const [priceError, setPriceError] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     getProductsUseCase.execute().then(setProducts);
@@ -47,5 +48,29 @@ export const useProducts = (getProductsUseCase: GetProductsUseCase, getProductBy
     setEditingProduct(undefined);
   }, [setEditingProduct]);
 
-  return { products, reload, updatingQuantity, editingProduct, setEditingProduct, error, cancelEditPrice };
+  function onChangePrice(priceProvided: string) {
+    const price = Number(priceProvided);
+    if (!editingProduct) return;
+
+
+    const isValidNumber = !isNaN(price);
+    setEditingProduct({ ...editingProduct, price: priceProvided });
+
+    if (!isValidNumber) {
+      setPriceError('Only numbers are allowed');
+    } else {
+      if (!priceRegex.test(priceProvided)) {
+        setPriceError('Invalid price format');
+      } else if (price > 999.99) {
+        setPriceError('The max possible price is 999.99');
+      } else {
+        setPriceError(undefined);
+      }
+    }
+
+  }
+
+  return { products, reload, updatingQuantity, editingProduct, setEditingProduct, error, cancelEditPrice, priceError, onChangePrice };
 };
+
+const priceRegex = /^\d+(\.\d{1,2})?$/;
