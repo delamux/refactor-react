@@ -10,6 +10,7 @@ import { StoreApi } from '../../data/api/StoreApi.ts';
 import { Product, ProductStatus } from '../../domain/Product.ts';
 import { GetProductsUseCase } from '../../domain/GetProductsUseCase.ts';
 import { ProductApiRepository } from '../../data/ProductApiRepository.ts';
+import { GetProductByIdUseCase } from '../../domain/GetProductByIdUseCase.ts';
 
 const baseColumn: Partial<GridColDef<Product>> = {
   disableColumnMenu: true,
@@ -20,6 +21,12 @@ const storeApi = new StoreApi();
 function createGetProductsUseCase() {
   const repository = new ProductApiRepository(storeApi);
   return new GetProductsUseCase(repository);
+}
+
+
+function createGetProductByIdUseCase(): GetProductByIdUseCase {
+  const repository = new ProductApiRepository(storeApi);
+  return new GetProductByIdUseCase(repository);
 }
 
 export const ProductsPage: React.FC = () => {
@@ -33,6 +40,8 @@ export const ProductsPage: React.FC = () => {
   const [priceError, setPriceError] = useState<string | undefined>(undefined);
 
   const getProductsUseCase = useMemo(() => createGetProductsUseCase(), []);
+  const getProductByIdUseCase = useMemo(() => createGetProductByIdUseCase(), []);
+
   const {
     products,
     reload,
@@ -41,12 +50,9 @@ export const ProductsPage: React.FC = () => {
     setEditingProduct,
     cancelEditPrice,
     error: productError,
-  } = useProducts(getProductsUseCase, storeApi);
+  } = useProducts(getProductsUseCase, getProductByIdUseCase);
 
-  // REFACTOR update one product
   useEffect(() => setSnackBarError(productError), [productError]);
-
-  // REFACTOR validate edit proce
 
   // REFACTOR validation change price
   function handleChangePrice(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void {

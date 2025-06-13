@@ -2,11 +2,10 @@ import { useCallback, useEffect, useState } from 'react';
 import { useReload } from './useReload.ts';
 import { Product } from '../../domain/Product.ts';
 import { GetProductsUseCase } from '../../domain/GetProductsUseCase.ts';
-import { buildProduct } from '../../data/ProductApiRepository.ts';
-import { StoreApi } from '../../data/api/StoreApi.ts';
 import { useAppContext } from '../context/useAppContext.ts';
+import { ProductNotFoundError, GetProductByIdUseCase } from '../../domain/GetProductByIdUseCase.ts';
 
-export const useProducts = (getProductsUseCase: GetProductsUseCase, storeApi: StoreApi) => {
+export const useProducts = (getProductsUseCase: GetProductsUseCase, getProductByIdUseCase: GetProductByIdUseCase) => {
   const { currentUser } = useAppContext();
 
   const [products, setProducts] = useState<Product[]>([]);
@@ -19,6 +18,10 @@ export const useProducts = (getProductsUseCase: GetProductsUseCase, storeApi: St
     getProductsUseCase.execute().then(setProducts);
   }, [reloadKey, getProductsUseCase]);
 
+  useEffect(() => {
+
+  }, []);
+
   const updatingQuantity = useCallback(
     async (id: number) => {
       if (id) {
@@ -26,19 +29,19 @@ export const useProducts = (getProductsUseCase: GetProductsUseCase, storeApi: St
           setError('Only admin users can edit the price of a product');
           return;
         }
-
-        storeApi
-          .get(id)
-          .then(buildProduct)
-          .then(product => {
-            setEditingProduct(product);
-          })
-          .catch(() => {
-            setError(`Product with id ${id} not found`);
-          });
+        try {
+          const product = await getProductByIdUseCase.execute(id);
+          setEditingProduct(product);
+        } catch (error) {
+            if (error instanceof ProductNotFoundError) {
+              setError(error.message);
+            } else {
+              setError('Unknown error occurred while updating product quantity');
+            }
+        }
       }
     },
-    [currentUser, storeApi]
+    [currentUser, getProductByIdUseCase]
   );
 
   const cancelEditPrice = useCallback(() => {
