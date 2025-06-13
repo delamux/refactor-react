@@ -14,7 +14,6 @@ const baseColumn: Partial<GridColDef<Product>> = {
   sortable: false,
 };
 
-
 export const ProductsPage: React.FC = () => {
   /**
    * @deprecated use error returner instead snackBarError or setSnackBarError

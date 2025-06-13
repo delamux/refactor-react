@@ -31,5 +31,4 @@ export class CompositionRoot {
   public provideStoreApi(): StoreApi {
     return this.storeApi;
   }
-
 }
