@@ -23,7 +23,6 @@ function createGetProductsUseCase() {
   return new GetProductsUseCase(repository);
 }
 
-
 function createGetProductByIdUseCase(): GetProductByIdUseCase {
   const repository = new ProductApiRepository(storeApi);
   return new GetProductByIdUseCase(repository);

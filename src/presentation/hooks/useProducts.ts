@@ -18,9 +18,7 @@ export const useProducts = (getProductsUseCase: GetProductsUseCase, getProductBy
     getProductsUseCase.execute().then(setProducts);
   }, [reloadKey, getProductsUseCase]);
 
-  useEffect(() => {
-
-  }, []);
+  useEffect(() => {}, []);
 
   const updatingQuantity = useCallback(
     async (id: number) => {
@@ -33,11 +31,11 @@ export const useProducts = (getProductsUseCase: GetProductsUseCase, getProductBy
           const product = await getProductByIdUseCase.execute(id);
           setEditingProduct(product);
         } catch (error) {
-            if (error instanceof ProductNotFoundError) {
-              setError(error.message);
-            } else {
-              setError('Unknown error occurred while updating product quantity');
-            }
+          if (error instanceof ProductNotFoundError) {
+            setError(error.message);
+          } else {
+            setError('Unknown error occurred while updating product quantity');
+          }
         }
       }
     },

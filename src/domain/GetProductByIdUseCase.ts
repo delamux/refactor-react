@@ -13,11 +13,9 @@ export class GetProductByIdUseCase {
 
   async execute(id: number): Promise<Product> {
     try {
-      return  await this.repository.get(id.toString());
-    }
-    catch (error) {
+      return await this.repository.get(id);
+    } catch (error) {
       throw new ProductNotFoundError(`Product with id ${id} not found`);
     }
-
   }
 }

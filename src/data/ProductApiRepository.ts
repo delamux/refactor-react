@@ -12,8 +12,8 @@ export class ProductApiRepository implements ProductRepository {
     return remoteProducts.map(buildProduct);
   }
 
-  async get(id: string): Promise<Product> {
-    const response = await this.storeApi.get(parseInt(id, 10));
+  async get(id: number): Promise<Product> {
+    const response = await this.storeApi.get(id);
 
     return buildProduct(response);
   }
