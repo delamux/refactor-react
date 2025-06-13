@@ -3,7 +3,8 @@ import { useReload } from './useReload.ts';
 import { Product } from '../../domain/Product.ts';
 import { GetProductsUseCase } from '../../domain/GetProductsUseCase.ts';
 import { useAppContext } from '../context/useAppContext.ts';
-import { ProductNotFoundError, GetProductByIdUseCase } from '../../domain/GetProductByIdUseCase.ts';
+import { GetProductByIdUseCase } from '../../domain/GetProductByIdUseCase.ts';
+import { ProductNotFoundError } from '../../domain/ProductRepository.ts';
 
 export const useProducts = (getProductsUseCase: GetProductsUseCase, getProductByIdUseCase: GetProductByIdUseCase) => {
   const { currentUser } = useAppContext();
