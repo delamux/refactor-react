@@ -18,13 +18,12 @@ const baseColumn: Partial<GridColDef<Product>> = {
 };
 
 const storeApi = new StoreApi();
+const repository = new ProductApiRepository(storeApi);
 function createGetProductsUseCase() {
-  const repository = new ProductApiRepository(storeApi);
   return new GetProductsUseCase(repository);
 }
 
 function createGetProductByIdUseCase(): GetProductByIdUseCase {
-  const repository = new ProductApiRepository(storeApi);
   return new GetProductByIdUseCase(repository);
 }
 
