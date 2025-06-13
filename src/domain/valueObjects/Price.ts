@@ -6,9 +6,9 @@ const priceRegex = /^\d+(\.\d{1,2})?$/;
 
 export type PriceProps = {
   value: number;
-}
+};
 
-export class Price extends ValueObject<PriceProps>{
+export class Price extends ValueObject<PriceProps> {
   public readonly value: number;
 
   private constructor(props: PriceProps) {
@@ -17,7 +17,7 @@ export class Price extends ValueObject<PriceProps>{
   }
 
   public static create(value: string): Price {
-    const price  = Number(value);
+    const price = Number(value);
     this.validate(value);
 
     return new Price({ value: Number(price) });

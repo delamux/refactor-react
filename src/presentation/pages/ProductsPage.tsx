@@ -5,11 +5,11 @@ import { MainAppBar } from '../components/MainAppBar.tsx';
 import styled from '@emotion/styled';
 import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { ConfirmationDialog } from '../components/ConfirmationDialog.tsx';
-import { useProducts } from '../hooks/useProducts.ts';
-import { Product, ProductStatus } from '../../domain/Product.ts';
+import { ProductViewModel, useProducts } from '../hooks/useProducts.ts';
+import { ProductStatus } from '../../domain/Product.ts';
 import { CompositionRoot } from '../../CompositionRoot.ts';
 
-const baseColumn: Partial<GridColDef<Product>> = {
+const baseColumn: Partial<GridColDef<ProductViewModel>> = {
   disableColumnMenu: true,
   sortable: false,
 };
@@ -75,7 +75,7 @@ export const ProductsPage: React.FC = () => {
   }
 
   // REFACTOR: columns to render
-  const columns: GridColDef<Product>[] = useMemo(
+  const columns: GridColDef<ProductViewModel>[] = useMemo(
     () => [
       { ...baseColumn, field: 'id', headerName: 'ID', width: 70 },
       { ...baseColumn, field: 'title', headerName: 'Title', width: 600 },
@@ -113,11 +113,9 @@ export const ProductsPage: React.FC = () => {
         headerAlign: 'center',
         align: 'center',
         renderCell: params => {
-          const status = +params.row.price === 0 ? 'inactive' : 'active';
-
           return (
-            <StatusContainer status={status}>
-              <Typography variant="body1">{status}</Typography>
+            <StatusContainer status={params.row.status}>
+              <Typography variant="body1">{params.row.status}</Typography>
             </StatusContainer>
           );
         },
@@ -148,7 +146,7 @@ export const ProductsPage: React.FC = () => {
         <Typography variant="h3" component="h1" gutterBottom>
           {'Product price updater'}
         </Typography>
-        <DataGrid<Product>
+        <DataGrid<ProductViewModel>
           columnBuffer={10} // We set the buffer to no make test fail
           rowHeight={300}
           rows={products}

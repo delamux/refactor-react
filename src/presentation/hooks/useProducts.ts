@@ -1,27 +1,29 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useReload } from './useReload.ts';
-import { Product } from '../../domain/Product.ts';
+import { Product, ProductStatus } from '../../domain/Product.ts';
 import { GetProductsUseCase } from '../../domain/GetProductsUseCase.ts';
 import { useAppContext } from '../context/useAppContext.ts';
 import { GetProductByIdUseCase } from '../../domain/GetProductByIdUseCase.ts';
 import { ProductNotFoundError } from '../../domain/ProductRepository.ts';
 import { Price, ValidationError } from '../../domain/valueObjects/Price.ts';
 
+export type ProductViewModel = Product & { status: ProductStatus };
+
 export const useProducts = (getProductsUseCase: GetProductsUseCase, getProductByIdUseCase: GetProductByIdUseCase) => {
   const { currentUser } = useAppContext();
 
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<ProductViewModel[]>([]);
   const [reloadKey, reload] = useReload();
-  const [editingProduct, setEditingProduct] = useState<Product | undefined>(undefined);
+  const [editingProduct, setEditingProduct] = useState<ProductViewModel | undefined>(undefined);
 
   const [error, setError] = useState<string>();
   const [priceError, setPriceError] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    getProductsUseCase.execute().then(setProducts);
-  }, [reloadKey, getProductsUseCase]);
-
-  useEffect(() => {}, []);
+    getProductsUseCase.execute()
+      .then(p => setProducts(p.map(buildProductViewModel)));
+    }, [reloadKey, getProductsUseCase]
+  );
 
   const updatingQuantity = useCallback(
     async (id: number) => {
@@ -32,7 +34,7 @@ export const useProducts = (getProductsUseCase: GetProductsUseCase, getProductBy
         }
         try {
           const product = await getProductByIdUseCase.execute(id);
-          setEditingProduct(product);
+          setEditingProduct(buildProductViewModel(product));
         } catch (error) {
           if (error instanceof ProductNotFoundError) {
             setError(error.message);
@@ -73,6 +75,13 @@ export const useProducts = (getProductsUseCase: GetProductsUseCase, getProductBy
     error,
     cancelEditPrice,
     priceError,
-    onChangePrice,
+    onChangePrice
   };
 };
+
+function buildProductViewModel(product: Product): ProductViewModel {
+  return {
+    ...product,
+    status: product.price === '0.00' ? 'inactive' : 'active',
+  };
+}
