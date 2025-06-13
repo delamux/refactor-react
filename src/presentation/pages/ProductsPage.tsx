@@ -3,14 +3,13 @@ import { DataGrid, GridActionsCellItem, GridColDef, GridValueFormatterParams } f
 import { Footer } from '../components/Footer.tsx';
 import { MainAppBar } from '../components/MainAppBar.tsx';
 import styled from '@emotion/styled';
-import { ChangeEvent, useCallback, useMemo, useState } from 'react';
-import { useAppContext } from '../context/useAppContext.ts';
+import { ChangeEvent, useEffect, useMemo, useState } from 'react';
 import { ConfirmationDialog } from '../components/ConfirmationDialog.tsx';
 import { useProducts } from '../hooks/useProducts.ts';
 import { StoreApi } from '../../data/api/StoreApi.ts';
 import { Product, ProductStatus } from '../../domain/Product.ts';
 import { GetProductsUseCase } from '../../domain/GetProductsUseCase.ts';
-import { buildProduct, ProductApiRepository } from "../../data/ProductApiRepository.ts";
+import { ProductApiRepository } from "../../data/ProductApiRepository.ts";
 
 const baseColumn: Partial<GridColDef<Product>> = {
   disableColumnMenu: true,
@@ -24,44 +23,32 @@ function createGetProductsUseCase() {
 }
 
 export const ProductsPage: React.FC = () => {
-  const { currentUser } = useAppContext();
-
+  /**
+   * @deprecated use error returner instead snackBarError or setSnackBarError
+   */
   const [snackBarError, setSnackBarError] = useState<string>();
+
   const [snackBarSuccess, setSnackBarSuccess] = useState<string>();
 
-  const [editingProduct, setEditingProduct] = useState<Product | undefined>(undefined);
   const [priceError, setPriceError] = useState<string | undefined>(undefined);
 
   const getProductsUseCase = useMemo(() => createGetProductsUseCase(), []);
-  const { products, reload } = useProducts(getProductsUseCase);
+  const {
+    products,
+    reload,
+    updatingQuantity,
+    editingProduct,
+    setEditingProduct,
+    cancelEditPrice,
+    error: productError
+  } = useProducts(getProductsUseCase,  storeApi);
 
   // REFACTOR update one product
-  const updatingQuantity = useCallback(
-    async (id: number) => {
-      if (id) {
-        if (!currentUser.isAdmin) {
-          setSnackBarError('Only admin users can edit the price of a product');
-          return;
-        }
+  useEffect(() => setSnackBarError(productError), [productError])
 
-        storeApi
-          .get(id)
-          .then(buildProduct)
-          .then(product => {
-            setEditingProduct(product);
-          })
-          .catch(() => {
-            setSnackBarError(`Product with id ${id} not found`);
-          });
-      }
-    },
-    [currentUser]
-  );
 
   // REFACTOR validate edit proce
-  const cancelEditPrice = useCallback(() => {
-    setEditingProduct(undefined);
-  }, []);
+
 
   // REFACTOR validation change price
   function handleChangePrice(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void {
@@ -102,7 +89,7 @@ export const ProductsPage: React.FC = () => {
         setEditingProduct(undefined);
         reload();
       } catch (error) {
-        setSnackBarSuccess(
+        setSnackBarError(
           `An error has ocurred updating the price ${editingProduct.price} for '${editingProduct.title}'`
         );
         setEditingProduct(undefined);
