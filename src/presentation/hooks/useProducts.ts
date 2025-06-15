@@ -1,13 +1,13 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useReload } from './useReload.ts';
-import { Product, ProductStatus } from '../../domain/Product.ts';
+import { Product, ProductPrimitives, ProductStatus } from '../../domain/Product.ts';
 import { GetProductsUseCase } from '../../domain/GetProductsUseCase.ts';
 import { useAppContext } from '../context/useAppContext.ts';
 import { GetProductByIdUseCase } from '../../domain/GetProductByIdUseCase.ts';
 import { ProductNotFoundError } from '../../domain/ProductRepository.ts';
 import { Price, ValidationError } from '../../domain/valueObjects/Price.ts';
 
-export type ProductViewModel = Product & { status: ProductStatus };
+export type ProductViewModel = ProductPrimitives & { status: ProductStatus };
 
 export const useProducts = (getProductsUseCase: GetProductsUseCase, getProductByIdUseCase: GetProductByIdUseCase) => {
   const { currentUser } = useAppContext();
@@ -80,6 +80,6 @@ export const useProducts = (getProductsUseCase: GetProductsUseCase, getProductBy
 function buildProductViewModel(product: Product): ProductViewModel {
   return {
     ...product,
-    status: product.price === '0.00' ? 'inactive' : 'active',
+    price: product.price.value.toFixed(2)
   };
 }
