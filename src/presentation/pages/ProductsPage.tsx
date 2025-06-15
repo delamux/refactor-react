@@ -35,7 +35,6 @@ export const ProductsPage: React.FC = () => {
     onChangePrice(event.target.value);
   }
 
-  // REFACTOR: columns to render
   const columns: GridColDef<ProductViewModel>[] = useMemo(
     () => [
       { ...baseColumn, field: 'id', headerName: 'ID', width: 70 },

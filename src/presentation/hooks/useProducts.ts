@@ -74,7 +74,7 @@ export const useProducts = (
   async function saveEditPrice(): Promise<void> {
     if (editingProduct) {
       try {
-        await getEditProductUseCase.execute(currentUser, editingProduct.id, editingProduct.price);
+        await getEditProductUseCase.execute(currentUser, Product.create(editingProduct));
 
         setMessage({ type: 'success', text: `Price ${editingProduct.price} for '${editingProduct.title}' updated` });
         setEditingProduct(undefined);
