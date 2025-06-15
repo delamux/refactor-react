@@ -34,7 +34,7 @@ export const useProducts = (
     async (id: number) => {
       if (id) {
         if (!currentUser.isAdmin) {
-          setMessage({ type: 'error', text:'Only admin users can edit the price of a product' });
+          setMessage({ type: 'error', text: 'Only admin users can edit the price of a product' });
           return;
         }
         try {
@@ -42,7 +42,6 @@ export const useProducts = (
           setEditingProduct(buildProductViewModel(product));
         } catch (error) {
           if (error instanceof ProductNotFoundError) {
-
             setMessage({ type: 'error', text: error.message });
           } else {
             setMessage({ type: 'error', text: 'Unknown error occurred while updating product quantity' });
@@ -79,17 +78,17 @@ export const useProducts = (
 
         setMessage({ type: 'success', text: `Price ${editingProduct.price} for '${editingProduct.title}' updated` });
         setEditingProduct(undefined);
-        reload()
+        reload();
       } catch (error) {
         if (error instanceof ActionNotAllowedError) {
           setMessage({
             type: 'error',
-            text: error.message
+            text: error.message,
           });
         } else {
           setMessage({
             type: 'error',
-            text: `An error has occurred updating the price ${editingProduct.price} for '${editingProduct.title}'`
+            text: `An error has occurred updating the price ${editingProduct.price} for '${editingProduct.title}'`,
           });
         }
         setEditingProduct(undefined);
@@ -100,7 +99,7 @@ export const useProducts = (
 
   const oncloseMessage = useCallback(() => {
     setMessage(undefined);
-  }, [])
+  }, []);
 
   return {
     products,
@@ -111,7 +110,7 @@ export const useProducts = (
     priceError,
     onChangePrice,
     saveEditPrice,
-    oncloseMessage
+    oncloseMessage,
   };
 };
 

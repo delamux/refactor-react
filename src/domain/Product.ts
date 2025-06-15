@@ -41,11 +41,11 @@ export class Product extends Entity {
   }
 
   editPrice(price: string): Product {
-   return Product.create({
-     id: this.id,
-     title: this.title,
-     image: this.image,
-     price: price,
-   });
+    return Product.create({
+      id: this.id,
+      title: this.title,
+      image: this.image,
+      price: price,
+    });
   }
 }

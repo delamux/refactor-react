@@ -29,7 +29,7 @@ export class CompositionRoot {
     return new GetProductByIdUseCase(this.repository);
   }
 
-  public provideUpdateProductPriceUseCase() : UpdateProductPriceUseCase {
+  public provideUpdateProductPriceUseCase(): UpdateProductPriceUseCase {
     return new UpdateProductPriceUseCase(this.repository);
   }
 }
