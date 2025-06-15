@@ -23,12 +23,12 @@ export class Product extends Entity {
   public readonly status: ProductStatus;
 
   private constructor(props: ProductEntity) {
-    super(props.id)
+    super(props.id);
     this.id = props.id;
     this.title = props.title;
     this.image = props.image;
-    this.price = props.price
-    this.status = props.status
+    this.price = props.price;
+    this.status = props.status;
   }
 
   public static create(props: ProductPrimitives): Product {
@@ -36,8 +36,7 @@ export class Product extends Entity {
     return new Product({
       ...props,
       price,
-      status: price.value === 0 ? 'inactive' : 'active'
+      status: price.value === 0 ? 'inactive' : 'active',
     });
   }
-
 }

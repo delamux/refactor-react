@@ -80,6 +80,6 @@ export const useProducts = (getProductsUseCase: GetProductsUseCase, getProductBy
 function buildProductViewModel(product: Product): ProductViewModel {
   return {
     ...product,
-    price: product.price.value.toFixed(2)
+    price: product.price.value.toFixed(2),
   };
 }

@@ -1,10 +1,10 @@
 export type EntityData = {
   id: number;
-}
+};
 
 const isEntity = (value: unknown): value is Entity => {
   return value instanceof Entity;
-}
+};
 
 export abstract class Entity implements EntityData {
   protected constructor(public readonly id: number) {}
