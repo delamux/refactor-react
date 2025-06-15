@@ -20,10 +20,8 @@ export const useProducts = (getProductsUseCase: GetProductsUseCase, getProductBy
   const [priceError, setPriceError] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    getProductsUseCase.execute()
-      .then(p => setProducts(p.map(buildProductViewModel)));
-    }, [reloadKey, getProductsUseCase]
-  );
+    getProductsUseCase.execute().then(p => setProducts(p.map(buildProductViewModel)));
+  }, [reloadKey, getProductsUseCase]);
 
   const updatingQuantity = useCallback(
     async (id: number) => {
@@ -75,7 +73,7 @@ export const useProducts = (getProductsUseCase: GetProductsUseCase, getProductBy
     error,
     cancelEditPrice,
     priceError,
-    onChangePrice
+    onChangePrice,
   };
 };
 

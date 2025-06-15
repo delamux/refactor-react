@@ -82,7 +82,7 @@ export function verifyProductPriceAndStatus(row: HTMLElement, price: string, sta
   const cells = rowScope.getAllByRole('cell');
   const priceIndex = 3;
   const statusIndex = 4;
-  console.log(`price: $${price}`)
+  console.log(`price: $${price}`);
   within(cells[priceIndex]).getByText(`$${price}`);
   within(cells[statusIndex]).getByText(new RegExp(status, 'i'));
 }
