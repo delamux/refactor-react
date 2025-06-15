@@ -27,7 +27,8 @@ export const useProducts = (
     getProductsUseCase.execute().then(p => setProducts(p.map(buildProductViewModel)));
   }, [reloadKey, getProductsUseCase]);
 
-  const updatingQuantity = useCallback(async (id: number) => {
+  const updatingQuantity = useCallback(
+    async (id: number) => {
       if (id) {
         if (!currentUser.isAdmin) {
           setMessage({ type: 'error', text: 'Only admin users can edit the price of a product' });

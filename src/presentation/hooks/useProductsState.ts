@@ -13,4 +13,4 @@ export type UseProducts = {
   onChangePrice: (price: string) => void;
   saveEditPrice: () => Promise<void>;
   oncloseMessage: () => void;
-}
+};
