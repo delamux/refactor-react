@@ -3,7 +3,7 @@ import { DataGrid, GridActionsCellItem, GridColDef, GridValueFormatterParams } f
 import { Footer } from '../components/Footer.tsx';
 import { MainAppBar } from '../components/MainAppBar.tsx';
 import styled from '@emotion/styled';
-import { ChangeEvent, useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, useMemo } from 'react';
 import { ConfirmationDialog } from '../components/ConfirmationDialog.tsx';
 import { ProductViewModel, useProducts } from '../hooks/useProducts.ts';
 import { ProductStatus } from '../../domain/Product.ts';
@@ -15,63 +15,25 @@ const baseColumn: Partial<GridColDef<ProductViewModel>> = {
 };
 
 export const ProductsPage: React.FC = () => {
-  /**
-   * @deprecated use error returner instead snackBarError or setSnackBarError
-   */
-  const [snackBarError, setSnackBarError] = useState<string>();
-
-  const [snackBarSuccess, setSnackBarSuccess] = useState<string>();
 
   const getProductsUseCase = useMemo(() => CompositionRoot.getInstance().provideGetProductsUseCase(), []);
   const getProductByIdUseCase = useMemo(() => CompositionRoot.getInstance().provideGetProductByIdUseCase(), []);
-  // TODO remove in next refactors
-  const storeApi = useMemo(() => CompositionRoot.getInstance().provideStoreApi(), []);
+  const getEditProductUseCase = useMemo(() => CompositionRoot.getInstance().provideUpdateProductPriceUseCase(), []);
 
   const {
     products,
-    reload,
     updatingQuantity,
     editingProduct,
-    setEditingProduct,
     cancelEditPrice,
-    error: productError,
+    message,
     priceError,
     onChangePrice,
-  } = useProducts(getProductsUseCase, getProductByIdUseCase);
+    saveEditPrice,
+    oncloseMessage
+  } = useProducts(getProductsUseCase, getProductByIdUseCase, getEditProductUseCase);
 
-  useEffect(() => setSnackBarError(productError), [productError]);
-
-  // REFACTOR validation change price
   function handleChangePrice(event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void {
     onChangePrice(event.target.value);
-  }
-
-  // REFACTOR: Save edit price
-  async function saveEditPrice(): Promise<void> {
-    if (editingProduct) {
-      const remoteProduct = await storeApi.get(editingProduct.id);
-
-      if (!remoteProduct) return;
-
-      const editedRemoteProduct = {
-        ...remoteProduct,
-        price: Number(editingProduct.price),
-      };
-
-      try {
-        await storeApi.post(editedRemoteProduct);
-
-        setSnackBarSuccess(`Price ${editingProduct.price} for '${editingProduct.title}' updated`);
-        setEditingProduct(undefined);
-        reload();
-      } catch (error) {
-        setSnackBarError(
-          `An error has ocurred updating the price ${editingProduct.price} for '${editingProduct.title}'`
-        );
-        setEditingProduct(undefined);
-        reload();
-      }
-    }
   }
 
   // REFACTOR: columns to render
@@ -163,20 +125,20 @@ export const ProductsPage: React.FC = () => {
 
       <Snackbar
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        open={snackBarError !== undefined}
+        open={message !== undefined && message.type === 'error'}
         autoHideDuration={2000}
-        onClose={() => setSnackBarError(undefined)}
+        onClose={oncloseMessage}
       >
-        <Alert severity="error">{snackBarError}</Alert>
+        <Alert severity="error">{message?.text}</Alert>
       </Snackbar>
 
       <Snackbar
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-        open={snackBarSuccess !== undefined}
+        open={message !== undefined && message.type === 'success'}
         autoHideDuration={2000}
-        onClose={() => setSnackBarSuccess(undefined)}
+        onClose={oncloseMessage}
       >
-        <Alert severity="success">{snackBarSuccess}</Alert>
+        <Alert severity="success">{message?.text}</Alert>
       </Snackbar>
 
       {editingProduct && (

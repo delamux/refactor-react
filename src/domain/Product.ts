@@ -39,4 +39,13 @@ export class Product extends Entity {
       status: price.value === 0 ? 'inactive' : 'active',
     });
   }
+
+  editPrice(price: string): Product {
+   return Product.create({
+     id: this.id,
+     title: this.title,
+     image: this.image,
+     price: price,
+   });
+  }
 }

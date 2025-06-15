@@ -6,17 +6,24 @@ import { useAppContext } from '../context/useAppContext.ts';
 import { GetProductByIdUseCase } from '../../domain/GetProductByIdUseCase.ts';
 import { ProductNotFoundError } from '../../domain/ProductRepository.ts';
 import { Price, ValidationError } from '../../domain/valueObjects/Price.ts';
+import { ActionNotAllowedError, UpdateProductPriceUseCase } from '../../domain/UpdateProductPriceUseCase.ts';
 
 export type ProductViewModel = ProductPrimitives & { status: ProductStatus };
 
-export const useProducts = (getProductsUseCase: GetProductsUseCase, getProductByIdUseCase: GetProductByIdUseCase) => {
+export type Message = { type: 'success' | 'error'; text: string };
+
+export const useProducts = (
+  getProductsUseCase: GetProductsUseCase,
+  getProductByIdUseCase: GetProductByIdUseCase,
+  getEditProductUseCase: UpdateProductPriceUseCase
+) => {
   const { currentUser } = useAppContext();
 
   const [products, setProducts] = useState<ProductViewModel[]>([]);
   const [reloadKey, reload] = useReload();
   const [editingProduct, setEditingProduct] = useState<ProductViewModel | undefined>(undefined);
 
-  const [error, setError] = useState<string>();
+  const [message, setMessage] = useState<Message>();
   const [priceError, setPriceError] = useState<string | undefined>(undefined);
 
   useEffect(() => {
@@ -27,7 +34,7 @@ export const useProducts = (getProductsUseCase: GetProductsUseCase, getProductBy
     async (id: number) => {
       if (id) {
         if (!currentUser.isAdmin) {
-          setError('Only admin users can edit the price of a product');
+          setMessage({ type: 'error', text:'Only admin users can edit the price of a product' });
           return;
         }
         try {
@@ -35,9 +42,10 @@ export const useProducts = (getProductsUseCase: GetProductsUseCase, getProductBy
           setEditingProduct(buildProductViewModel(product));
         } catch (error) {
           if (error instanceof ProductNotFoundError) {
-            setError(error.message);
+
+            setMessage({ type: 'error', text: error.message });
           } else {
-            setError('Unknown error occurred while updating product quantity');
+            setMessage({ type: 'error', text: 'Unknown error occurred while updating product quantity' });
           }
         }
       }
@@ -59,21 +67,51 @@ export const useProducts = (getProductsUseCase: GetProductsUseCase, getProductBy
       if (error instanceof ValidationError) {
         setPriceError(error.message);
       } else {
-        setError('Unknown error occurred while updating product quantity');
+        setMessage({ type: 'error', text: 'Unknown error occurred while updating product quantity' });
       }
     }
   }
 
+  async function saveEditPrice(): Promise<void> {
+    if (editingProduct) {
+      try {
+        await getEditProductUseCase.execute(currentUser, editingProduct.id, editingProduct.price);
+
+        setMessage({ type: 'success', text: `Price ${editingProduct.price} for '${editingProduct.title}' updated` });
+        setEditingProduct(undefined);
+        reload()
+      } catch (error) {
+        if (error instanceof ActionNotAllowedError) {
+          setMessage({
+            type: 'error',
+            text: error.message
+          });
+        } else {
+          setMessage({
+            type: 'error',
+            text: `An error has occurred updating the price ${editingProduct.price} for '${editingProduct.title}'`
+          });
+        }
+        setEditingProduct(undefined);
+        reload();
+      }
+    }
+  }
+
+  const oncloseMessage = useCallback(() => {
+    setMessage(undefined);
+  }, [])
+
   return {
     products,
-    reload,
     updatingQuantity,
     editingProduct,
-    setEditingProduct,
-    error,
+    message,
     cancelEditPrice,
     priceError,
     onChangePrice,
+    saveEditPrice,
+    oncloseMessage
   };
 };
 

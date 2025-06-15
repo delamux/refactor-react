@@ -2,6 +2,7 @@ import { StoreApi } from './data/api/StoreApi.ts';
 import { ProductApiRepository } from './data/ProductApiRepository.ts';
 import { GetProductsUseCase } from './domain/GetProductsUseCase.ts';
 import { GetProductByIdUseCase } from './domain/GetProductByIdUseCase.ts';
+import { UpdateProductPriceUseCase } from './domain/UpdateProductPriceUseCase.ts';
 
 export class CompositionRoot {
   private readonly storeApi: StoreApi;
@@ -28,7 +29,7 @@ export class CompositionRoot {
     return new GetProductByIdUseCase(this.repository);
   }
 
-  public provideStoreApi(): StoreApi {
-    return this.storeApi;
+  public provideUpdateProductPriceUseCase() : UpdateProductPriceUseCase {
+    return new UpdateProductPriceUseCase(this.repository);
   }
 }

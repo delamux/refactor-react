@@ -17,6 +17,20 @@ export class ProductApiRepository implements ProductRepository {
 
     return buildProduct(response);
   }
+
+  async save(product: Product): Promise<void> {
+    const remoteProduct: RemoteProduct = {
+      id: product.id,
+      title: product.title,
+      image: product.image,
+      price: parseFloat(product.price.value.toString()),
+      description: '',
+      category: '',
+      rating: { rate: 0, count: 0 },
+    };
+
+    await this.storeApi.post(remoteProduct);
+  }
 }
 
 export function buildProduct(remoteProduct: RemoteProduct): Product {
