@@ -1,22 +1,19 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useReload } from './useReload.ts';
-import { Product, ProductPrimitives, ProductStatus } from '../../domain/Product.ts';
+import { Product } from '../../domain/Product.ts';
 import { GetProductsUseCase } from '../../domain/GetProductsUseCase.ts';
 import { useAppContext } from '../context/useAppContext.ts';
 import { GetProductByIdUseCase } from '../../domain/GetProductByIdUseCase.ts';
 import { ProductNotFoundError } from '../../domain/ProductRepository.ts';
 import { Price, ValidationError } from '../../domain/valueObjects/Price.ts';
 import { ActionNotAllowedError, UpdateProductPriceUseCase } from '../../domain/UpdateProductPriceUseCase.ts';
-
-export type ProductViewModel = ProductPrimitives & { status: ProductStatus };
-
-export type Message = { type: 'success' | 'error'; text: string };
+import { Message, ProductViewModel, UseProducts } from './useProductsState.ts';
 
 export const useProducts = (
   getProductsUseCase: GetProductsUseCase,
   getProductByIdUseCase: GetProductByIdUseCase,
   getEditProductUseCase: UpdateProductPriceUseCase
-) => {
+): UseProducts => {
   const { currentUser } = useAppContext();
 
   const [products, setProducts] = useState<ProductViewModel[]>([]);
@@ -30,8 +27,7 @@ export const useProducts = (
     getProductsUseCase.execute().then(p => setProducts(p.map(buildProductViewModel)));
   }, [reloadKey, getProductsUseCase]);
 
-  const updatingQuantity = useCallback(
-    async (id: number) => {
+  const updatingQuantity = useCallback(async (id: number) => {
       if (id) {
         if (!currentUser.isAdmin) {
           setMessage({ type: 'error', text: 'Only admin users can edit the price of a product' });
@@ -71,7 +67,7 @@ export const useProducts = (
     }
   }
 
-  async function saveEditPrice(): Promise<void> {
+  const saveEditPrice = useCallback(async () => {
     if (editingProduct) {
       try {
         await getEditProductUseCase.execute(currentUser, Product.create(editingProduct));
@@ -95,7 +91,7 @@ export const useProducts = (
         reload();
       }
     }
-  }
+  }, [editingProduct, currentUser, getEditProductUseCase, reload]);
 
   const oncloseMessage = useCallback(() => {
     setMessage(undefined);

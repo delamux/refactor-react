@@ -5,9 +5,10 @@ import { MainAppBar } from '../components/MainAppBar.tsx';
 import styled from '@emotion/styled';
 import { ChangeEvent, useMemo } from 'react';
 import { ConfirmationDialog } from '../components/ConfirmationDialog.tsx';
-import { ProductViewModel, useProducts } from '../hooks/useProducts.ts';
+import { useProducts } from '../hooks/useProducts.ts';
 import { ProductStatus } from '../../domain/Product.ts';
 import { CompositionRoot } from '../../CompositionRoot.ts';
+import { ProductViewModel } from '../hooks/useProductsState.ts';
 
 const baseColumn: Partial<GridColDef<ProductViewModel>> = {
   disableColumnMenu: true,
