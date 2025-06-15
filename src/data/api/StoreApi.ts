@@ -6,9 +6,7 @@ export class StoreApi {
   }
 
   async get(id: number): Promise<RemoteProduct> {
-    const remoteProduct = await this.getProduct(id);
-
-    return remoteProduct;
+    return this.getProduct(id);
   }
 
   async post(productToUpdate: RemoteProduct): Promise<void> {

@@ -1,6 +1,6 @@
 import { RemoteProduct, StoreApi } from './api/StoreApi.ts';
 import { Product } from '../domain/Product.ts';
-import { ProductRepository } from '../domain/ProductRepository.ts';
+import { ProductNotFoundError, ProductRepository } from '../domain/ProductRepository.ts';
 
 export class ProductApiRepository implements ProductRepository {
   constructor(private readonly storeApi: StoreApi) {}
@@ -21,13 +21,15 @@ export class ProductApiRepository implements ProductRepository {
   async save(product: Product): Promise<void> {
     const remoteProduct = await this.storeApi.get(product.id);
 
-    if (!remoteProduct) return;
+    if (!remoteProduct) {
+      throw new ProductNotFoundError('Product not found on saving');
+    }
 
     const editedProduct = {
       ...remoteProduct,
       ...product,
-      price: product.price.value
-    }
+      price: product.price.value,
+    };
 
     return this.storeApi.post(editedProduct);
   }
